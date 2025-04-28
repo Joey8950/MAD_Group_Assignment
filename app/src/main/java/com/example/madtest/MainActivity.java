@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
     Button btnAddTask;
     RecyclerView recyclerView;
     ProgressBar progressBar;
-    TextView txtProgress;
+    TextView txtProgress;git
 
     TaskAdapter taskAdapter;
     List<Task> taskList;

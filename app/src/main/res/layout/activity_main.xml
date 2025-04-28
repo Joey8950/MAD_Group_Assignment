@@ -1,55 +1,72 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:orientation="vertical"
-    android:padding="20dp"
-    android:layout_height="match_parent">
-
-    <EditText
-        android:id="@+id/etTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/hint_enter_task"
-        android:minHeight="48dp"
-        android:paddingVertical="12dp"
-        android:inputType="text"
-        android:textColor="@android:color/black"
-        android:autofillHints="username" />
-
-    <Spinner
-        android:id="@+id/spinnerStatus"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:minHeight="48dp"
-        android:paddingVertical="12dp"/>
-
-    <Button
-        android:id="@+id/btnAddTask"
-        android:text="@string/btn_add_task"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"/>
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:max="100"
-        android:layout_marginTop="10dp"/>
+    android:layout_height="match_parent"
+    android:background="#121212"
+    tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/txtProgress"
+        android:id="@+id/tvToday"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/progress_text"
-        android:layout_marginTop="5dp"
-        android:textColor="@android:color/black"/>
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:text="Today"
+        android:textColor="#FFFFFF"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:text="23 Apr · Wednesday"
+        android:textColor="#AAAAAA"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvToday" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/rvTasks"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvDate" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAddTask"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
+        android:backgroundTint="#F05454"
+        android:clickable="true"
+        android:contentDescription="Add new task"
+        android:focusable="true"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@android:drawable/ic_input_add"
+        app:tint="#FFFFFF" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"/>
+        android:background="#1E1E1E"
+        app:itemIconTint="@layout/bottom_nav_color"
+        app:itemTextColor="@layout/bottom_nav_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@layout/bottom_navigation_menu" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

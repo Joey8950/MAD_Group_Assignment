@@ -1,0 +1,22 @@
+<resources>
+    <string-array name="task_statuses">
+        <item>Pending</item>
+        <item>In Progress</item>
+        <item>Completed</item>
+    </string-array>
+
+    <string name="madtest">MADTest</string>
+
+    <string name="hint_enter_task">Enter your task here</string>
+    <string name="hint_update_task_title">Update Task Title</string>
+
+    <string name="task_title">Task Title</string>
+    <string name="status_label">Status</string>
+    <string name="edit_task">Edit Task</string>
+    <string name="delete_task">Delete Task</string>
+
+    <string name="btn_add_task">Add Task</string>
+    <string name="progress_text">0% Completed</string>
+
+    <string name="status_placeholder">Status: %1$s</string>
+</resources>

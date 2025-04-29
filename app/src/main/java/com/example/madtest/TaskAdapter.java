@@ -1,63 +1,79 @@
-package com.example.madtest;
+package com.example.tasktodo;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.CheckBox;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.List;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
 
-    private final List<Task> taskList;  // Marked as final
-    private final OnTaskClickListener listener;  // Marked as final
+    private List<Task> taskList;
+    private OnTaskClickListener listener;
 
+    // Interface for click listener
     public interface OnTaskClickListener {
-        void onUpdate(Task task);
-        void onDelete(Task task);
+        void onTaskClick(Task task, int position);
     }
 
-    public TaskAdapter(List<Task> taskList, OnTaskClickListener listener) {
+    public TaskAdapter(List<Task> taskList) {
         this.taskList = taskList;
-        this.listener = listener;
     }
 
-    public static class TaskViewHolder extends RecyclerView.ViewHolder {
-        TextView txtTitle, txtStatus;
-        ImageButton btnDelete, btnEdit;
-
-        public TaskViewHolder(View itemView) {
-            super(itemView);
-            txtTitle = itemView.findViewById(R.id.txtTitle);
-            txtStatus = itemView.findViewById(R.id.txtStatus);
-            btnDelete = itemView.findViewById(R.id.btnDelete);
-            btnEdit = itemView.findViewById(R.id.btnEdit);
-        }
+    public void setOnTaskClickListener(OnTaskClickListener listener) {
+        this.listener = listener;
     }
 
     @NonNull
     @Override
     public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.task_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_task, parent, false);
         return new TaskViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
         Task task = taskList.get(position);
-        holder.txtTitle.setText(task.getTitle());
+        holder.tvTaskTitle.setText(task.getTitle());
+        holder.tvTaskDescription.setText(task.getDescription());
 
-        // Using a string resource with a placeholder for status
-        holder.txtStatus.setText(holder.itemView.getContext().getString(R.string.status_placeholder, task.getStatus()));
+        // Remove previous listener to avoid duplicate calls
+        holder.checkboxTask.setOnCheckedChangeListener(null);
+        holder.checkboxTask.setChecked(task.isCompleted());
 
-        holder.btnEdit.setOnClickListener(v -> listener.onUpdate(task));
-        holder.btnDelete.setOnClickListener(v -> listener.onDelete(task));
+        // Set new listener
+        holder.checkboxTask.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            task.setCompleted(isChecked);
+        });
+
+        // Set click listener for the whole item
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onTaskClick(task, position);
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
         return taskList.size();
+    }
+
+    static class TaskViewHolder extends RecyclerView.ViewHolder {
+        CheckBox checkboxTask;
+        TextView tvTaskTitle;
+        TextView tvTaskDescription;
+
+        public TaskViewHolder(@NonNull View itemView) {
+            super(itemView);
+            checkboxTask = itemView.findViewById(R.id.checkboxTask);
+            tvTaskTitle = itemView.findViewById(R.id.tvTaskTitle);
+            tvTaskDescription = itemView.findViewById(R.id.tvTaskDescription);
+        }
     }
 }

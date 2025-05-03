@@ -77,7 +77,7 @@ public class SearchActivity extends AppCompatActivity implements TaskAdapter.OnT
                 } else {
                     // Search tasks
                     List<Task> searchResults = taskRepository.searchTasks(query);
-                    
+
                     if (searchResults.isEmpty()) {
                         // No results found
                         rvRecentlyViewed.setVisibility(View.GONE);
@@ -101,28 +101,28 @@ public class SearchActivity extends AppCompatActivity implements TaskAdapter.OnT
         if (bottomNavigationView != null) {
             // Set the selected item to search
             bottomNavigationView.setSelectedItemId(R.id.nav_search);
-            
+
             // Set up the navigation listener
             bottomNavigationView.setOnItemSelectedListener(item -> {
                 int itemId = item.getItemId();
-                
+
                 if (itemId == R.id.nav_today) {
                     // Navigate to Today view (MainActivity)
                     navigateToToday();
                     return true;
                 } else if (itemId == R.id.nav_upcoming) {
                     // Navigate to Upcoming view
-                    // You can implement this later
+                    navigateToUpcoming();
                     return true;
                 } else if (itemId == R.id.nav_search) {
                     // Already on search, do nothing
                     return true;
                 } else if (itemId == R.id.nav_browse) {
                     // Navigate to Browse view
-                    // You can implement this later
+                    navigateToBrowse();
                     return true;
                 }
-                
+
                 return false;
             });
         }
@@ -132,30 +132,49 @@ public class SearchActivity extends AppCompatActivity implements TaskAdapter.OnT
         // Go back to MainActivity (Today view)
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.putExtra("select_tab", "today"); // Add this line to ensure Today tab is selected
         startActivity(intent);
         finish(); // Close this activity
     }
 
+    // In your setupRecentlyViewedItems() method or wherever you handle clicks on recently viewed items
     private void setupRecentlyViewedItems() {
         // This would typically show recently viewed tasks or categories
         // For now, we'll just show a static list of "Today" and "Upcoming"
         List<RecentItem> recentItems = new ArrayList<>();
         recentItems.add(new RecentItem("Today", RecentItem.TYPE_SECTION));
         recentItems.add(new RecentItem("Upcoming", RecentItem.TYPE_SECTION));
-        
+
         RecentItemAdapter recentAdapter = new RecentItemAdapter(recentItems);
         rvRecentlyViewed.setLayoutManager(new LinearLayoutManager(this));
         rvRecentlyViewed.setAdapter(recentAdapter);
-        
+
         recentAdapter.setOnItemClickListener(item -> {
             // Handle clicks on recently viewed items
             if ("Today".equals(item.getTitle())) {
-                navigateToToday(); // Navigate to Today view
+                navigateToToday();
             } else if ("Upcoming".equals(item.getTitle())) {
-                // Navigate to upcoming tasks view
-                // You can implement this later
+                navigateToUpcoming();
             }
         });
+    }
+
+
+
+    private void navigateToUpcoming() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.putExtra("select_tab", "upcoming");
+        startActivity(intent);
+        finish();
+    }
+
+    private void navigateToBrowse() {
+        Intent intent = new Intent(this, BrowseActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.putExtra("select_tab", "browse");
+        startActivity(intent);
+        finish();
     }
 
     @Override
@@ -166,7 +185,6 @@ public class SearchActivity extends AppCompatActivity implements TaskAdapter.OnT
 
     @Override
     public void onTaskClick(Task task, int position) {
-        // Show task detail dialog
         showTaskDetailDialog(task);
     }
 
@@ -175,7 +193,7 @@ public class SearchActivity extends AppCompatActivity implements TaskAdapter.OnT
         dialog.setOnTaskUpdatedListener(updatedTask -> {
             // Update the task in the repository
             taskRepository.updateTask(updatedTask);
-            
+
             // Refresh the search results
             String query = etSearch.getText().toString().trim();
             if (!query.isEmpty()) {
@@ -183,6 +201,16 @@ public class SearchActivity extends AppCompatActivity implements TaskAdapter.OnT
                 searchResultsAdapter.updateTasks(searchResults);
             }
         });
+
+        dialog.setOnTaskDeletedListener(deletedTask -> {
+            // Refresh the search results after deletion
+            String query = etSearch.getText().toString().trim();
+            if (!query.isEmpty()) {
+                List<Task> searchResults = taskRepository.searchTasks(query);
+                searchResultsAdapter.updateTasks(searchResults);
+            }
+        });
+
         dialog.show();
     }
 }
